@@ -1,5 +1,5 @@
 from pieces_functions import *
-from Piece import Piece
+from Pieces.Piece import Piece
 
 class Knight(Piece):
     def __init__(self, color, isWhite): #sets attribute
@@ -11,6 +11,27 @@ class Knight(Piece):
 
     def build(self): #build copy of object
         return Knight(self.color,self.isWhite)
+
+    def possible_moves(self,origin):
+
+        moves = []
+        values = [
+            [2,1],
+            [-2,1],
+            [2,-1],
+            [-2,-1],
+            [1,2],
+            [-1,2],
+            [1,-2],
+            [-1,-2]
+        ]
+
+        for v in values:
+            moves.append(
+                [[v[0] + origin[0], v[1] + origin[1]]]
+            )
+        
+        return move_in_board(moves)
 
     def valid_move(self,board, origin, target): #checks if move is valid
 

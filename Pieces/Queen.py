@@ -1,5 +1,5 @@
 from pieces_functions import *
-from Piece import Piece
+from Pieces.Piece import Piece
 
 class Queen(Piece):
     def __init__(self, color, isWhite): #creates piece attributes
@@ -11,6 +11,23 @@ class Queen(Piece):
     
     def build(self): #Builds copy
         return Queen(self.color,self.isWhite)
+
+    def possible_moves(self,origin):
+        moves = [
+            [[i,j] for i in range(origin[0],-1,-1) for j in range(origin[1],-1,-1)],
+            [[i,j] for i in range(origin[0],8) for j in range(origin[1],-1,-1)],
+            [[i,j] for i in range(origin[0],-1,-1) for j in range(origin[1],8)],
+            [[i,j] for i in range(origin[0],8) for j in range(origin[1],8)]
+        ]
+
+        moves += [
+            [[i,origin[1]] for i in range(origin[0]+1, 8)],
+            [[i,origin[1]] for i in range(origin[0]-1, -1, -1)],
+            [[origin[0],i] for i in range(origin[1]+1, 8)],
+            [[origin[0],i] for i in range(origin[1]-1, -1, -1)]
+        ]
+
+        return moves
 
     def valid_move(self,board, origin, target): #WChecks if move is valid
 

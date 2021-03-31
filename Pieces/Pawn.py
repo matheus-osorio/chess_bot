@@ -1,5 +1,5 @@
 from pieces_functions import *
-from Piece import Piece
+from Pieces.Piece import Piece
 
 class Pawn(Piece):
     def __init__(self, color, isWhite): #basic attributes for piece
@@ -19,6 +19,22 @@ class Pawn(Piece):
 
     def move_piece(self): #what to do if piece moved (prevents doing 2 square move)
         self.moved = True
+    
+    def possible_moves(self,origin):
+        coordenates = []
+
+        if self.isWhite:
+            line = [[origin[0] + 1, origin[1]], [origin[0] + 2, origin[1]]]
+            diag1 = [[origin[0] + 1, origin[1] + 1]]
+            diag2 = [[origin[0] + 1, origin[1] + -1]]
+        else:
+            line = [[origin[0] -1, origin[1]], [origin[0] -2, origin[1]]]
+            diag1 = [[origin[0] - 1, origin[1] + 1]]
+            diag2 = [[origin[0] - 1, origin[1] + -1]]
+        
+        coordenates = [line,diag1,diag2]
+
+        return move_in_board(coordenates)
 
     def valid_move(self,board, origin, target): #checks if this piece can do this move
 

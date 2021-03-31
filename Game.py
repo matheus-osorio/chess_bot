@@ -3,7 +3,7 @@ from pygame import (Rect)
 from pygame.locals import (QUIT,MOUSEBUTTONUP)
 from bot import Bot
 
-class UI:
+class Game:
     def __init__(self,width,height,player,level):
         self.width = width
         self.height = height
@@ -31,7 +31,7 @@ class UI:
         self.define_square_specs()
 
     def make_pieces(self): #puts pieces on a matrix
-        pieces = 'R N B Q K B N R'.split(' ')
+        pieces = 'R N B K Q B N R'.split(' ')
         pawns = ['p'] * 8
         
         def make_obj(values, id,color):
@@ -167,19 +167,4 @@ class UI:
                             origin = None
                          
 
-ui = UI(800,600,'white',3)
 
-ui.run()
-
-
-
-
-
-
-        
-
-        
-
-
-
-        

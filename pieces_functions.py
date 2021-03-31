@@ -73,3 +73,17 @@ def get_diagonal_path(board,origin,destiny,diff): #gets a diagonal path
 
 def same_length(arr1, arr2): #checks if 2 arrays have the same length
     return len(arr1) == len(arr2)
+
+#---------------------------------------------
+
+def move_in_board(matrix):
+    def inside(move):
+        return (0 <= move[0] < 8) and (0 <= move[1] < 8)
+    moves = []
+    for line in matrix:
+        moves.append(
+            [move for move in line if inside(move)]
+        )
+    
+    return moves
+

@@ -1,6 +1,6 @@
 
 from pieces_functions import *
-from Piece import Piece
+from Pieces.Piece import Piece
 
 class Bishop(Piece):
     def __init__(self, color, isWhite): #makes attribute of piece
@@ -12,6 +12,16 @@ class Bishop(Piece):
     
     def build(self): #build copy of piece
         return Bishop(self.color,self.isWhite)
+
+    def possible_moves(self,origin):
+        moves = [
+            [[i,j] for i in range(origin[0],-1,-1) for j in range(origin[1],-1,-1)],
+            [[i,j] for i in range(origin[0],8) for j in range(origin[1],-1,-1)],
+            [[i,j] for i in range(origin[0],-1,-1) for j in range(origin[1],8)],
+            [[i,j] for i in range(origin[0],8) for j in range(origin[1],8)]
+        ]
+
+        return moves
 
     def valid_move(self,board, origin, target): #checks if the move is valid
 

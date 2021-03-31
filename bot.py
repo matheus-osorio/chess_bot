@@ -1,9 +1,11 @@
-from Rook import Rook
-from Knight import Knight
-from Bishop import Bishop
-from King import King
-from Queen import Queen
-from Pawn import Pawn
+from Pieces.Rook import Rook
+from Pieces.Knight import Knight
+from Pieces.Bishop import Bishop
+from Pieces.King import King
+from Pieces.Queen import Queen
+from Pieces.Pawn import Pawn
+
+from threading import Thread
 
 class Bot:
     
@@ -30,35 +32,36 @@ class Bot:
 
     def choose_move(self):
         moves = []
-        for target_x in range(0,8):
-            for target_y in range(0,8):
 
-                for initial_x in range(0,8):
-                    for initial_y in range(0,8):
-                        
-                        if self.board[initial_x][initial_y] == None:
-                            continue
-                        
-                        piece = self.board[initial_x][initial_y]
+        for initial_x in range(0,8):
+            for initial_y in range(0,8):
+                
+                if self.board[initial_x][initial_y] == None:
+                    continue
+                
+                piece = self.board[initial_x][initial_y]
 
-                        if piece.isWhite != self.isWhite:
-                            continue
+                if piece.isWhite != self.isWhite:
+                    continue
+                
+                
+                origin = [initial_x,initial_y]
 
-                        origin = [initial_x,initial_y]
-                        target = [target_x, target_y]
-                        
-                        if not piece.valid_move(self.board,origin,target):
-                            continue 
-                        
-                        moves.append({
-                            'origin': origin,
-                            'target': target
-                        })
+                possible = piece.possible_moves(origin)  
+                for path in possible:
+                    for move in path:
+                        if piece.valid_move(self.board,origin,move):        
+                            moves.append({
+                                'origin': origin,
+                                'target': move
+                            })
+                        else:
+                            break
         
         for move in moves:
-           board_c = copy_board(self.board)
-           move_piece(board_c, move['origin'],move['target'])
-           move['points'] = do_min(board_c,self.isWhite,-1000000,1,self.level) 
+            board_c = copy_board(self.board)
+            move_piece(board_c, move['origin'],move['target'])
+            move['points'] = do_min(board_c,self.isWhite,-1000000,1,self.level) 
         
         coordenates = moves[0]
         for move in moves:
@@ -98,38 +101,40 @@ def do_max(board,isWhite,threshold,level, maximum):
         return count_points(board,isWhite)
 
     value = None
-    for target_x in range(0,8):
-        for target_y in range(0,8):
+    for initial_x in range(0,8):
+        for initial_y in range(0,8):
+            
+            if board[initial_x][initial_y] == None:
+                continue
+            
+            
+            piece = board[initial_x][initial_y]
 
-            for initial_x in range(0,8):
-                for initial_y in range(0,8):
-                    
-                    if board[initial_x][initial_y] == None:
-                        continue
-                    
-                    
-                    piece = board[initial_x][initial_y]
+            if piece.isWhite != isWhite:
+                    continue
+            
+            
+            origin = [initial_x,initial_y]
+            
+            possible = piece.possible_moves(origin)
 
-                    if piece.isWhite != isWhite:
-                            continue
-                    
-                    
-                    origin = [initial_x,initial_y]
-                    target = [target_x, target_y]
-                    
-                    if not piece.valid_move(board,origin,target):
-                        continue 
-                    
-                    board_c = copy_board(board)
-                    move_piece(board_c,origin,target)
-                    path_v = do_min(board_c,isWhite,(-1000000 if value == None else value),level + 1, maximum)
-                    
-                    if path_v > threshold and level > 1:
-                        return path_v
-                        
-                    if value == None or value < path_v:
-                        value = path_v
-    
+            for path in possible:
+                    for move in path:
+                        if piece.valid_move(board,origin,move):        
+                            
+                            board_c = copy_board(board)
+                            move_piece(board_c,origin,move)
+                            path_v = do_min(board_c,isWhite,(-1000000 if value == None else value),level + 1, maximum)
+                            
+                            if path_v > threshold and level > 1:
+                                return path_v
+                                
+                            if value == None or value < path_v:
+                                value = path_v
+
+                        else:
+                            break        
+
     return value
     
 
@@ -138,38 +143,71 @@ def do_min(board,isWhite,threshold,level,maximum):
         return count_points(board,isWhite)
 
     value = None
-    for target_x in range(0,8):
-        for target_y in range(0,8):
-
-            for initial_x in range(0,8):
-                for initial_y in range(0,8):
-                    
-                    if board[initial_x][initial_y] == None:
+    for initial_x in range(0,8):
+        for initial_y in range(0,8):
+            
+            if board[initial_x][initial_y] == None:
                         continue
                     
                     
-                    piece = board[initial_x][initial_y]
+            piece = board[initial_x][initial_y]
 
-                    if piece.isWhite == isWhite:
-                            continue
-                    
-                    origin = [initial_x,initial_y]
-                    target = [target_x, target_y]
-                    
-                    if not piece.valid_move(board,origin,target):
-                        continue 
-                    
-                    board_c = copy_board(board)
-                    move_piece(board_c,origin,target)
-                    path_v = do_max(board_c,isWhite,(1000000 if value == None else value),level + 1, maximum)
-                    
-                    if path_v < threshold and  level > 1:
-                        return path_v
+            if piece.isWhite == isWhite:
+                    continue
+            
+            origin = [initial_x,initial_y]
+        
+            
+            origin = [initial_x,initial_y]
+            
+            possible = piece.possible_moves(origin)
+
+            for path in possible:
+                for move in path:
+                    if piece.valid_move(board,origin,move):        
                         
-                    if value == None or value > path_v:
-                        value = path_v
-    
+                        board_c = copy_board(board)
+                        move_piece(board_c,origin,move)
+                        path_v = do_max(board_c,isWhite,(1000000 if value == None else value),level + 1, maximum)
+                        
+                        if path_v < threshold and  level > 1:
+                            return path_v
+                            
+                        if value == None or value > path_v:
+                            value = path_v
+
+                    else:
+                        break
+
     return value
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 def count_points(board,isWhite):

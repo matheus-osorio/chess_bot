@@ -1,5 +1,5 @@
 from pieces_functions import *
-from Piece import Piece
+from Pieces.Piece import Piece
 
 class King(Piece):
     def __init__(self, color, isWhite): #sets attributes of piece
@@ -15,6 +15,27 @@ class King(Piece):
 
     def move_piece(self): #changes status of piece, prevents castling
         self.moved = True
+    
+    def possible_moves(self,origin):
+        change = [
+            [-1,-1],
+            [-1,1],
+            [1,-1],
+            [1,1],
+            [1,0],
+            [-1,0],
+            [0,1],
+            [0,-1]
+        ]
+
+        moves = []
+
+        for m in change:
+            moves.append(
+                [[origin[0] + m[0], origin[1] + m[1]]]
+            )
+        
+        return move_in_board(moves)
 
     def valid_move(self,board, origin, target):
 

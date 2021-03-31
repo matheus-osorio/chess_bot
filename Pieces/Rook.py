@@ -1,5 +1,5 @@
 from pieces_functions import *
-from Piece import Piece
+from Pieces.Piece import Piece
 
 class Rook(Piece):
     
@@ -16,6 +16,18 @@ class Rook(Piece):
     
     def move_piece(self): #Changes Status (prevents castling with this Rook)
         self.moved = True
+    
+    def possible_moves(self,origin):
+        moves = []
+        moves = [
+            [[i,origin[1]] for i in range(origin[0]+1, 8)],
+            [[i,origin[1]] for i in range(origin[0]-1, -1, -1)],
+            [[origin[0],i] for i in range(origin[1]+1, 8)],
+            [[origin[0],i] for i in range(origin[1]-1, -1, -1)]
+        ]
+
+        return moves
+
 
     def valid_move(self,board, origin, target): 
         
